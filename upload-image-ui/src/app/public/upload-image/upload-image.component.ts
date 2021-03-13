@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ImageService} from '../../service/image.service';
+import {ApiUrlService} from '../../service/api-url.service';
 
 @Component({
   selector: 'app-upload-image',
@@ -10,7 +11,7 @@ export class UploadImageComponent implements OnInit {
   imageUrl: any;
   fileToUpload: File = null;
 
-  constructor(private imageService: ImageService) { }
+  constructor(private imageService: ImageService, private global: ApiUrlService) { }
 
   ngOnInit(): void {
     this.imageUrl = '/assets/image/default-image.png';
@@ -29,10 +30,11 @@ export class UploadImageComponent implements OnInit {
   OnSubmit(Caption, Image) {
     this.imageService.postFile(Caption.value, this.fileToUpload).subscribe(
       data => {
+        const url = this.global.imageUrl;
         console.log(data);
         Caption.value = null;
         Image.value = null;
-        this.imageUrl = data.imageUrl;
+        this.imageUrl = url + data.name;
       }
     );
   }
